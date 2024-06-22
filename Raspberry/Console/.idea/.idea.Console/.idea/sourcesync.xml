@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SourceSyncRemoteConfigurationsService"><![CDATA[{
+  "connections": [
+    {
+      "type": "ssh_configuration",
+      "name": "Raspberry 3B company",
+      "hostname": "192.168.227.104",
+      "username": "pi",
+      "remote_workspace_path": "/home/pi/AGV"
+    },
+    {
+      "type": "ssh_configuration",
+      "name": "Pirover.xyz",
+      "hostname": "167.172.83.201",
+      "username": "root"
+    }
+  ],
+  "mainConnection": "Pirover.xyz"
+}]]></component>
+</project>

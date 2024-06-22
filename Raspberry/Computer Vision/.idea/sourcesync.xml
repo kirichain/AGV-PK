@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="SourceSyncRemoteConfigurationsService"><![CDATA[{
+  "connections": [
+    {
+      "type": "ssh_configuration",
+      "name": "Raspberry Console - Computer Vision",
+      "hostname": "192.168.227.104",
+      "username": "pi"
+    }
+  ]
+}]]></component>
+</project>

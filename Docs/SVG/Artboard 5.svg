@@ -1,0 +1,123 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg id="Layer_4" data-name="Layer 4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 841.89 595.28">
+  <defs>
+    <style>
+      .cls-1, .cls-2, .cls-3, .cls-4, .cls-5, .cls-6, .cls-7, .cls-8 {
+        stroke-miterlimit: 10;
+      }
+
+      .cls-1, .cls-2, .cls-7 {
+        fill: none;
+      }
+
+      .cls-1, .cls-4, .cls-6, .cls-8 {
+        stroke: #231f20;
+      }
+
+      .cls-9 {
+        fill: #fff;
+      }
+
+      .cls-2, .cls-5 {
+        stroke: #fff;
+      }
+
+      .cls-3 {
+        stroke: #ed1c24;
+        stroke-width: 4px;
+      }
+
+      .cls-3, .cls-10 {
+        fill: #fff200;
+      }
+
+      .cls-4 {
+        fill: #726658;
+      }
+
+      .cls-5 {
+        fill: #231f20;
+        font-family: SegoeUI-Semilight, 'Segoe UI';
+        font-size: 24px;
+        font-weight: 300;
+      }
+
+      .cls-6 {
+        fill: #006838;
+      }
+
+      .cls-7 {
+        stroke: #fff200;
+        stroke-width: 2px;
+      }
+
+      .cls-8 {
+        fill: #414042;
+      }
+    </style>
+  </defs>
+  <rect class="cls-8" x="0" width="841.89" height="595.28"/>
+  <rect class="cls-8" x=".06" y="-595.28" width="841.89" height="595.28"/>
+  <rect class="cls-6" x=".06" y="-50" width="50" height="50"/>
+  <rect class="cls-8" x="50.06" y="-50" width="50" height="50"/>
+  <rect class="cls-8" x="100.06" y="-50" width="50" height="50"/>
+  <rect class="cls-8" x="150.06" y="-45.28" width="50" height="45.28"/>
+  <rect class="cls-8" x="200.06" y="-45.28" width="50" height="45.28"/>
+  <rect class="cls-8" x="250.06" y="-45.28" width="50" height="45.28"/>
+  <rect class="cls-8" x="300.06" y="-45.28" width="50" height="45.28"/>
+  <rect class="cls-8" x="350.06" y="-45.28" width="50" height="45.28"/>
+  <rect class="cls-8" x="400.06" y="-45.28" width="50" height="45.28"/>
+  <rect class="cls-8" x="450.06" y="-45.28" width="50" height="45.28"/>
+  <rect class="cls-8" x="500.06" y="-45.28" width="50" height="45.28"/>
+  <rect class="cls-8" x="550.06" y="-45.28" width="50" height="45.28"/>
+  <rect class="cls-8" x="600.06" y="-45.28" width="50" height="45.28"/>
+  <rect class="cls-8" x="650.06" y="-45.28" width="50" height="45.28"/>
+  <rect class="cls-8" x="700.06" y="-45.28" width="50" height="45.28"/>
+  <rect class="cls-8" x="750.06" y="-45.28" width="50" height="45.28"/>
+  <rect class="cls-8" x="800.06" y="-45.28" width="41.89" height="45.28"/>
+  <line class="cls-3" x1="-13" y1="11.17" x2="864" y2="11.17"/>
+  <rect class="cls-4" x="284.03" y="178.17" width="232.06" height="313"/>
+  <rect class="cls-1" x="481.58" y="167.17" width="69" height="22" transform="translate(15.89 397.02) rotate(-42.68)"/>
+  <rect class="cls-1" x="247.69" y="167.17" width="69" height="22" transform="translate(164.82 -134.24) rotate(37.14)"/>
+  <rect class="cls-8" x="460" y="138.17" width="21" height="75"/>
+  <rect class="cls-8" x="321.5" y="138.17" width="23" height="75"/>
+  <rect class="cls-8" x="250.06" y="225.17" width="75" height="23"/>
+  <rect class="cls-8" x="465.06" y="225.17" width="85" height="23"/>
+  <g>
+    <line class="cls-7" x1="148.21" y1="76.85" x2="242.99" y2="148.32"/>
+    <path class="cls-10" d="m138.57,69.59c3.27,5.1,6.73,12.22,7.92,17.89l2.98-9.67,8.47-5.52c-5.78.41-13.57-.96-19.37-2.7Z"/>
+    <path class="cls-10" d="m252.63,155.59c-5.8-1.74-13.6-3.11-19.38-2.7l8.47-5.52,2.98-9.66c1.19,5.67,4.66,12.78,7.92,17.89Z"/>
+  </g>
+  <g>
+    <line class="cls-7" x1="148.07" y1="236.67" x2="237.98" y2="236.67"/>
+    <path class="cls-10" d="m136,236.67c5.68,2.11,12.73,5.7,17.09,9.51l-3.44-9.51,3.44-9.51c-4.37,3.81-11.42,7.4-17.09,9.51Z"/>
+    <path class="cls-10" d="m250.06,236.67c-5.68,2.11-12.73,5.7-17.09,9.51l3.44-9.51-3.44-9.51c4.37,3.81,11.42,7.4,17.09,9.51Z"/>
+  </g>
+  <g>
+    <line class="cls-7" x1="562.13" y1="236.67" x2="658.93" y2="236.67"/>
+    <path class="cls-10" d="m550.06,236.67c5.68,2.11,12.73,5.7,17.09,9.51l-3.44-9.51,3.44-9.51c-4.37,3.81-11.42,7.4-17.09,9.51Z"/>
+    <path class="cls-10" d="m671,236.67c-5.68,2.11-12.73,5.7-17.09,9.51l3.44-9.51-3.44-9.51c4.37,3.81,11.42,7.4,17.09,9.51Z"/>
+  </g>
+  <g>
+    <line class="cls-7" x1="549.88" y1="146.13" x2="631.98" y2="73.19"/>
+    <path class="cls-10" d="m540.86,154.15c5.65-2.2,13.3-4.19,19.1-4.24l-8.89-4.83-3.74-9.39c-.74,5.75-3.62,13.12-6.46,18.46Z"/>
+    <path class="cls-10" d="m641,65.17c-2.85,5.35-5.73,12.72-6.46,18.46l-3.75-9.4-8.89-4.82c5.8-.05,13.45-2.05,19.1-4.25Z"/>
+  </g>
+  <g>
+    <line class="cls-7" x1="470.5" y1="126.1" x2="470.5" y2="61.24"/>
+    <path class="cls-10" d="m470.5,138.17c2.11-5.68,5.7-12.73,9.51-17.09l-9.51,3.44-9.51-3.44c3.81,4.37,7.4,11.42,9.51,17.09Z"/>
+    <path class="cls-10" d="m470.5,49.17c2.11,5.68,5.7,12.73,9.51,17.09l-9.51-3.44-9.51,3.44c3.81-4.37,7.4-11.42,9.51-17.09Z"/>
+  </g>
+  <g>
+    <line class="cls-7" x1="333" y1="126.1" x2="333" y2="61.24"/>
+    <path class="cls-10" d="m333,138.17c2.11-5.68,5.7-12.73,9.51-17.09l-9.51,3.44-9.51-3.44c3.81,4.37,7.4,11.42,9.51,17.09Z"/>
+    <path class="cls-10" d="m333,49.17c2.11,5.68,5.7,12.73,9.51,17.09l-9.51-3.44-9.51,3.44c3.81-4.37,7.4-11.42,9.51-17.09Z"/>
+  </g>
+  <text class="cls-5" transform="translate(575.06 264.04)"><tspan x="0" y="0">distance</tspan></text>
+  <text class="cls-5" transform="translate(155.12 264.33)"><tspan x="0" y="0">distance</tspan></text>
+  <text class="cls-5" transform="translate(156.2 344.7)"><tspan x="0" y="0">laser sensor</tspan></text>
+  <g>
+    <line class="cls-2" x1="287.56" y1="248.17" x2="252.84" y2="314.82"/>
+    <path class="cls-9" d="m250.06,320.17c.38-3.01.41-6.96-.27-9.78l3.42,3.72,5.01.67c-2.7,1.06-5.92,3.35-8.17,5.38Z"/>
+  </g>
+</svg>

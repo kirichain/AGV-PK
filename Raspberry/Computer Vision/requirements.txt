@@ -1,0 +1,7 @@
+imutils==0.5.4
+numpy==1.25.0
+opencv-contrib-python==4.7.0.72
+paho-mqtt==1.6.1
+Pillow==9.5.0
+pybase64==1.2.3
+pyzmq==25.1.0

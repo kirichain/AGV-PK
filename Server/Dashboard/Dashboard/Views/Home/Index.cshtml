@@ -1,0 +1,392 @@
+﻿@{
+    ViewData["Title"] = "Pungkook AGV Dashboard";
+}
+
+<div class="row">
+    <!--Left Column-->
+    <div class="col-sm-3 border-end border-bottom border-secondary border-2 px-3">
+        <select class="form-select my-2" id="agvSelector">
+            <option selected>AGV ID</option>
+            <option value="001">001</option>
+            <option value="002">002</option>
+            <option value="003">003</option>
+        </select>
+
+        <p class="text-danger" id="agvConnectingIndicator">Not connected</p>
+        <p class="text-danger" id="agvWorkingMapIndicator">Current working map:</p>
+        <p class="text-danger" id="agvCoordinatesIndicator">Current position:</p>
+
+        <select class="form-select my-2" id="modeSelector">
+            <option selected>AGV Mode</option>
+            <option value="idle">Idle</option>
+            <option value="delivery">Delivery</option>
+            <option value="direct">Direct</option>
+        </select>
+
+        @*        <p class="text-primary" id="agvSocketLatency">Socket Latency: </p>
+        *@
+        <!-- Left Tabs navs -->
+        <ul class="nav nav-tabs nav-justified mb-3" id="left-nav" role="tablist">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link active text-white"
+                   id="controlTab"
+                   data-mdb-toggle="tab"
+                   href="#control-tab"
+                   role="tab"
+                   aria-controls="control-tab"
+                   aria-selected="true">Control</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link text-white"
+                   id="monitorTab"
+                   data-mdb-toggle="tab"
+                   href="#monitor-tab"
+                   role="tab"
+                   aria-controls="monitor-tab"
+                   aria-selected="false">Monitor</a>
+            </li>
+        </ul>
+        <!-- Left Tabs navs -->
+        <!-- Left Tabs content -->
+        <div class="tab-content" id="left-tab-content">
+            <div class="tab-pane fade show active"
+                 id="control-tab"
+                 role="tabpanel"
+                 aria-labelledby="controlTab">
+                <!--Control tab content-->
+                <div class="container d-flex flex-column border border-secondary border-3 my-3 rounded">
+                    <h5 class="text-center my-1">Camera View</h5>
+                    <!-- Camera checked switch -->
+                    <div class="form-check form-switch mb-3 d-flex justify-content-center">
+                        <input class="form-check-input" type="checkbox" role="switch" id="cameraSwitch" />
+                        <label class="form-check-label" for="cameraSwitch" id="cameraIndicator">Off</label>
+                    </div>
+                    <div class="my-1" id="cameraView">
+                        <img id="cameraStreamView" style="object-fit: contain; height: 100%; width: 100%; background-color: #353535" />
+                    </div>
+                </div>
+                <div class="container d-flex flex-column border border-secondary border-3 my-3 rounded">
+                    <h5 class="text-center my-1">Control</h5>
+                    <div class="my-1" id="controlPanel">
+                        <div class="d-flex justify-content-center">
+                            <button type="button" class="btn btn-info btn-square-sm" id="goForwardButton">W</button>
+                        </div>
+                        <div class="d-flex justify-content-between">
+                            <button type="button" class="btn btn-info btn-square-sm" id="turnLeftButton">A</button>
+                            <button type="button" class="btn btn-info btn-square-sm" id="turnRightButton">D</button>
+                        </div>
+                        <div class="d-flex justify-content-center">
+                            <button type="button" class="btn btn-info btn-square-sm" id="goBackwardButton">S</button>
+                        </div>
+                        <div class="d-flex flex-column justify-content-center my-3">
+                            <label class="text-center" for="speedSlider" class="form-label" id="speedIndicator">Motor Speed: </label>
+                            <input type="range" class="form-range" min="0" max="255" step="1" id="speedSlider">
+                            <!-- Checked switch -->
+                            <div class="form-check form-switch mb-3 d-flex justify-content-center">
+                                <input class="form-check-input" type="checkbox" role="switch" id="steeringAssistSwitch" />
+                                <label class="form-check-label" for="steeringAssistSwitch" id="steeringAssistIndicator">Steering Assist</label>
+                            </div>
+                            <button type="button" class="btn btn-primary btn-md mb-3">Pause Operation</button>
+                            <button type="button" class="btn btn-danger btn-md mb-3">Emergency Stop</button>
+                            <button type="button" class="btn btn-warning btn-md">Restart</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="tab-pane fade"
+                 id="monitor-tab"
+                 role="tabpanel"
+                 aria-labelledby="monitorTab">
+                <!--Monitor tab content-->
+                <div class="container d-flex flex-column border border-secondary border-3 my-3 rounded">
+                    <h5 class="text-center my-1">Hardware connection</h5>
+                    <div class="my-1" id="motorControllerIndicator">Motor Controller: </div>
+                    <div class="my-1" id="rfidReaderIndicator">RFID Reader: </div>
+                    <div class="my-1" id="laserSensorControllerIndicator">Laser Sensor Controller: </div>
+                    <div class="my-1" id="laserSensorControllerIndicator">Lidar Controller: </div>
+                    <div class="my-1" id="laserSensorControllerIndicator">QR Code Scanner: </div>
+                    <div class="my-1" id="laserSensorControllerIndicator">Beacon Scanner: </div>
+                </div>
+                <div class="container d-flex flex-column border border-secondary border-3 my-3 rounded d-none">
+                    <h5 class="text-center my-1">Laser Sensors</h5>
+                    <div class="my-1" id="laserSensor1Indicator">Laser Sensors 1:</div>
+                    <div class="my-1" id="laserSensor2Indicator">Laser Sensors 2:</div>
+                    <div class="my-1" id="laserSensor3Indicator">Laser Sensors 3:</div>
+                    <div class="my-1" id="laserSensor4Indicator">Laser Sensors 4:</div>
+                    <div class="my-1" id="laserSensor5Indicator">Laser Sensors 5:</div>
+                    <div class="my-1" id="laserSensor6Indicator">Laser Sensors 6:</div>
+                </div>
+                <div class="container d-flex flex-column border border-secondary border-3 my-3 rounded d-none">
+                    <h5 class="text-center my-1">Robotic Arm</h5>
+                    <div class="my-1" id="joint1Indicator">Joint 1:</div>
+                    <div class="my-1" id="joint2Indicator">Joint 2:</div>
+                    <div class="my-1" id="joint3Indicator">Joint 3:</div>
+                    <div class="my-1" id="joint4Indicator">Joint 4:</div>
+                    <div class="my-1" id="actuatorModuleIndicator">Actuator module:</div>
+                </div>
+            </div>
+
+        </div>
+        <!-- Left Tabs content -->
+    </div>
+    <!--Left Column-->
+    <!--Map Display-->
+    <div class="col-sm-6 border-end border-bottom border-secondary border-2 p-0">
+        <div class="container-fluid min-vh-100 d-flex flex-column align-content-between p-0" id="mapView">
+            <div class="container-fluid d-flex justify-content-between border-bottom border-secondary">
+                <button type="button" class="btn btn-success my-2 mx-5" id="previousMap"><</button>
+
+                <select class="form-select my-2 mx-5" id="mapSelector">
+                    <option selected value="0">Choose map</option>
+                    <option value="Warehouse 1">Warehouse 1</option>
+                    <option value="Warehouse 2">Warehouse 2</option>
+                    <option value="Warehouse 3">Warehouse 3</option>
+                </select>
+
+                <button type="button" class="btn btn-success my-2 mx-5" id="nextMap">></button>
+            </div>
+            <div class="container-fluid vh-75 border-bottom border-secondary overflow-scroll p-0 d-none" id="mapViewView">
+            </div>
+            <div class="container-fluid vh-75 border-bottom border-secondary overflow-scroll p-0 d-none" id="beaconScannerView">
+                <div class="container d-flex flex-column align-items-center m-2">               
+                    <div class="container-fluid border border-warning p-0" id="detectedNearbyBeaconList">
+                        
+                    </div>            
+                </div>
+            </div>
+            <div class="container-fluid vh-75 border-bottom border-secondary overflow-scroll p-0 d-none" id="laserScannerView">
+                laserScanner
+            </div>
+            <div class="container-fluid vh-75 border-bottom border-secondary overflow-scroll p-0 d-none" id="deliveryControlView">
+                deliveryControl
+            </div>
+            <div class="container-fluid vh-75 border-bottom border-secondary overflow-scroll p-0 d-none" id="rfidReaderView">
+                rfidReader
+            </div>
+            <div class="container-fluid vh-75 border-bottom border-secondary overflow-scroll p-0 d-none" id="mapLinkView">
+                mapLink
+            </div>
+            <div class="container-fluid vh-75 border-bottom border-secondary p-0 d-none" id="computerVisionView">
+                <div class="container d-flex flex-column align-items-center m-2">
+                    <div class="my-1" id="computerVisionStreamView">
+                        <img id="computerVisionStreamImg" style="object-fit: contain; background-color: #353535" src="https://b2633864.smushcdn.com/2633864/wp-content/uploads/2015/11/pedestrian_detection_person_156.jpg?lossy=1&strip=1&webp=1" />
+                    </div>
+                    <div class="btn-group m-2" role="group" aria-label="Computer Vision View Mode Radio Button Group">
+                        <input type="radio" class="btn-check" name="btnradio" id="normalViewRadioButton" autocomplete="off" checked>
+                        <label class="btn btn-outline-primary" for="normalViewRadioButton">Normal View</label>
+
+                        <input type="radio" class="btn-check" name="btnradio" id="binaryViewRadioButton" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="binaryViewRadioButton">Binary View</label>
+
+                        <input type="radio" class="btn-check" name="btnradio" id="binaryValueViewRadioButton" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="binaryValueViewRadioButton">Binary Value View</label>
+
+                        <input type="radio" class="btn-check" name="btnradio" id="lineDetectedViewRadioButton" autocomplete="off">
+                        <label class="btn btn-outline-primary" for="lineDetectedViewRadioButton">Line Detected View</label>
+                    </div>
+                </div>
+            </div>
+            <div class="container-fluid vh-75 border-bottom border-secondary overflow-scroll p-0 d-none" id="beaconMeshView">
+                beaconMesh
+            </div>
+            <div class="container-fluid vh-75 border-bottom border-secondary overflow-scroll p-0 d-none" id="qrScannerView">
+                qrScanner
+            </div>
+            <div class="container-fluid d-flex justify-content-between" id="navBar">
+                <div class="container d-flex flex-column align-items-center m-2">
+                    <button type="button" class="btn bg-transparent" id="beaconScannerButton">
+                        <img src="https://img.icons8.com/?size=512&id=19333&format=png" width="75" height="75" class="m-2" />
+                    </button>
+                    <p class="text-center mx-2">Beacon Scanner</p>
+                </div>
+                <div class="container d-flex flex-column align-items-center m-2">
+                    <button type="button" class="btn bg-transparent" id="laserScannerButton">
+                        <img src="https://img.icons8.com/?size=512&id=63315&format=png" width="75" height="75" class="m-2" />
+                    </button>
+                    <p class="text-center mx-2">Lidar</p>
+                </div>
+                <div class="container d-flex flex-column align-items-center m-2">
+                    <button type="button" class="btn bg-transparent" id="mapViewButton">
+                        <img src="https://img.icons8.com/?size=512&id=107436&format=png" width="75" height="75" class="m-2" />
+                    </button>
+                    <p class="text-center mx-2">Map View</p>
+                </div>
+                <div class="container d-flex flex-column align-items-center m-2">
+                    <button type="button" class="btn bg-transparent" id="deliveryControlButton">
+                        <img src="https://img.icons8.com/?size=512&id=18974&format=png" width="75" height="75" class="m-2" />
+                    </button>
+                    <p class="text-center mx-2">Delivery Control</p>
+                </div>
+            </div>
+            <div class="container-fluid d-flex justify-content-between" id="navBar-2">
+                <div class="container d-flex flex-column align-items-center m-2">
+                    <button type="button" class="btn bg-transparent" id="rfidReaderButton">
+                        <img src="https://img.icons8.com/?size=512&id=BzkRzC9nkqbx&format=png" width="75" height="75" class="m-2" />
+                    </button>
+                    <p class="text-center mx-2">RFID Reader</p>
+                </div>
+                <div class="container d-flex flex-column align-items-center m-2">
+                    <button type="button" class="btn bg-transparent" id="mapLinkButton">
+                        <img src="https://img.icons8.com/?size=512&id=12312&format=png" width="75" height="75" class="m-2" />
+                    </button>
+                    <p class="text-center mx-2">Map Link</p>
+                </div>
+                <div class="container d-flex flex-column align-items-center m-2">
+                    <button type="button" class="btn bg-transparent" id="computerVisionButton">
+                        <img src="https://img.icons8.com/?size=512&id=bpip0gGiBLT1&format=png" width="75" height="75" class="m-2" />
+                    </button>
+                    <p class="text-center mx-2">Computer Vision</p>
+                </div>
+                <div class="container d-flex flex-column align-items-center m-2">
+                    <button type="button" class="btn bg-transparent" id="beaconMeshButton">
+                        <img src="https://img.icons8.com/?size=512&id=Oj8C8W5KLuHA&format=png" width="75" height="75" class="m-2" />
+                    </button>
+                    <p class="text-center mx-2">Beacon mesh</p>
+                </div>
+            </div>
+            <div class="container-fluid d-flex justify-content-between" id="navBar-3">
+                <div class="container d-flex flex-column align-items-center m-2">
+                    <button type="button" class="btn bg-transparent" id="qrScannerButton">
+                        <img src="https://img.icons8.com/?size=512&id=13019&format=png" width="75" height="75" class="m-2" />
+                    </button>
+                    <p class="text-center mx-2">QR Scanner</p>
+                </div>
+                <div class="container d-flex flex-column align-items-center m-2">
+                    <button type="button" class="btn bg-transparent" id="qrScannerButton">
+                        <img src="https://img.icons8.com/?size=512&id=zZEiTDwxlWjf&format=png" width="75" height="75" class="m-2" />
+                    </button>
+                    <p class="text-center mx-2">API</p>
+                </div>
+                <div class="container d-flex flex-column align-items-center m-2">
+                    <button type="button" class="btn bg-transparent" id="qrScannerButton">
+                        <img src="https://img.icons8.com/?size=512&id=13937&format=png" width="75" height="75" class="m-2" />
+                    </button>
+                    <p class="text-center mx-2">Update & Upgrade</p>
+                </div>
+                <div class="container d-flex flex-column align-items-center m-2">
+                    <button type="button" class="btn bg-transparent" id="qrScannerButton">
+                        <img src="https://img.icons8.com/?size=512&id=103202&format=png" width="75" height="75" class="m-2" />
+                    </button>
+                    <p class="text-center mx-2">Manual & Document</p>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!--Map Display-->
+    <!--Right Column-->
+    <div class="col-sm-3 border-bottom border-secondary border-2 px-3">
+        <h5 class="text-center my-2">System</h5>
+
+        <!-- Right Tabs navs -->
+        <ul class="nav nav-tabs nav-justified mb-3" id="right-nav" role="tablist">
+            <li class="nav-item" role="presentation">
+                <a class="nav-link active text-white"
+                   id="systemControlTab"
+                   data-mdb-toggle="tab"
+                   href="#system-control-tab"
+                   role="tab"
+                   aria-controls="system-control-tab"
+                   aria-selected="true">Control</a>
+            </li>
+            <li class="nav-item" role="presentation">
+                <a class="nav-link text-white"
+                   id="systemMonitorTab"
+                   data-mdb-toggle="tab"
+                   href="#system-monitor-tab"
+                   role="tab"
+                   aria-controls="system-monitor-tab"
+                   aria-selected="false">Monitor</a>
+            </li>
+
+        </ul>
+        <!-- Right Tabs navs -->
+        <!-- Right Tabs content -->
+        <div class="tab-content" id="right-tab-content">
+            <div class="tab-pane fade show active"
+                 id="system-control-tab"
+                 role="tabpanel"
+                 aria-labelledby="systemControlTab">
+                <!--System Control tab content-->
+                <div class="container d-flex flex-column border border-secondary border-3 my-3 rounded" id="agvPanel">
+                    <h5 class="text-center my-1">AGVs</h5>
+                    <p class="text-secondary" id="totalAgvCount">Total: </p>
+                    <p class="text-secondary" id="connectedAgvCount">Connected:</p>
+                    <button type="button" class="btn btn-primary btn-md mb-3">Pause Operation All</button>
+                    <button type="button" class="btn btn-danger btn-md mb-3">Emergency Stop All</button>
+                    <button type="button" class="btn btn-warning btn-md mb-3">Restart All</button>
+                </div>
+                <div class="container d-flex flex-column border border-secondary border-3 my-3 rounded" id="createMapPanel">
+                    <h5 class="text-center my-1">Create Map</h5>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Length" aria-label="Map length" aria-describedby="length-metric">
+                        <span class="input-group-text" id="length-metric">cm</span>
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Width" aria-label="Map width" aria-describedby="width-metric">
+                        <span class="input-group-text" id="width-metric">cm</span>
+                    </div>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Resolution" aria-label="Map resolution" aria-describedby="resolution-metric">
+                        <span class="input-group-text" id="resolution-metric">cm</span>
+                    </div>
+                    <center><button class="btn btn-outline-secondary mb-3" type="button" id="createMapButton">Create map</button></center>
+                </div>
+                <div class="container d-flex flex-column border border-secondary border-3 my-3 rounded" id="editMapPanel">
+                    <h5 class="text-center my-1">Edit Map</h5>
+                    <p class="mb-3" id="cellCoordIndicator">Cell coordinate:</p>
+                    <p class="mb-3">Map Layer</p>
+                    <select class="form-select mb-3" aria-label="Default select example" id="mapLayerSelector">
+                        <option value="baseLayer">Base Layer</option>
+                    </select>
+                    <p class="mb-3">Cell type</p>
+                    <select class="form-select mb-3" aria-label="Default select example" id="cellTypeSelector">
+                        <option value="0">Blank</option>
+                        <option value="*">Beacon</option>
+                        <option value="1">Obstacle</option>
+                        <option value="#">AGV</option>
+                        <option value="$">Package</option>
+                        <option value="!">RFID Card</option>
+                        <option value="-">Line/Tape</option>
+                    </select>
+                    <p class="mb-3">Cell value:</p>
+                    <input type="text" class="form-control mb-3" placeholder="Edit Cell Value" aria-label="Edit Cell Value" aria-describedby="editCellValue" id="editCellValue">
+                    <p class="mb-3">Map length:</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Edit Map Length" aria-label="Edit Map Length" aria-describedby="editLength-metric" id="editMapLength">
+                        <span class="input-group-text" id="editLength-metric">cm</span>
+                    </div>
+                    <p class="mb-3">Map width:</p>
+                    <div class="input-group mb-3">
+                        <input type="text" class="form-control" placeholder="Edit Map Width" aria-label="Edit Map Width" aria-describedby="editWidth-metric" id="editMapWidth">
+                        <span class="input-group-text" id="editWidth-metric">cm</span>
+                    </div>
+                    <center><button class="btn btn-outline-secondary mb-3" type="button" id="saveMapButton">Save map</button></center>
+                </div>
+                <!--System Control tab content-->
+            </div>
+            <div class="tab-pane fade"
+                 id="system-monitor-tab"
+                 role="tabpanel"
+                 aria-labelledby="systemMonitorTab">
+                <!--System Monitor tab content-->
+                <div class="container d-flex flex-column border border-secondary border-3 my-3 rounded">
+                    <h5 class="text-center my-1">MQTT Broker</h5>
+                    <div class="my-1" id="mqttPanel">agv/control/001</div>
+                    <div class="my-1" id="mqttPanel">agv/status</div>
+                    <div class="my-1" id="mqttPanel">agv/package/location</div>
+                    <div class="my-1" id="mqttPanel">agv/package/delivery</div>
+                </div>            
+                <div class="container d-flex flex-column border border-secondary border-3 my-3 rounded">
+                    <h5 class="text-center my-1">Charging Stations</h5>
+                    <div class="my-1" id="chargingStationCountIndicator">Total charging station:</div>
+                    <div class="my-1" id="activeChargingStationCountIndicator">Active charging station count:</div>
+                    <div class="my-1" id="incharingStationCountIndicator">Incharging station count:</div>
+                    <div class="my-1" id="idleCharingStationCountIndicator">Idle station count:</div>
+                </div>
+                <!--System Monitor tab content-->
+            </div>
+        </div>
+        <!-- Right Tabs content -->
+    </div>
+    <!--Right Column-->
+</div>
