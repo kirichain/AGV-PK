@@ -1,16 +1,18 @@
 import imutils
-from imutils.video import FPS
 import sys
-from threading import Thread
 import cv2
 import numpy as np
 import time
 import os
+import json
+import paho.mqtt.client as mqtt
+import concurrent.futures
+
+from threading import Thread
+from imutils.video import FPS
 from tkinter import *
 from tkinter import ttk
 from PIL import ImageTk, Image
-import json
-import paho.mqtt.client as mqtt
 from datetime import datetime
 
 start_time = time.time()
@@ -40,8 +42,15 @@ front_cam_frame_data = {
     "center-distance": "",
     "tilt-angle": ""
 }
+
 # Video source
-video_source = 'video-4.mp4'
+# video_source = 'video-4.mp4'
+video_sources = [
+    ('video-4.mp4', 'bottom'),
+    ('video-5.mp4', 'bottom'),
+    ('video-1.mp4', 'front'),
+    ('video-2.mp4', 'front')
+]
 
 # RSTP link from camera
 rstp_link = 'rtsp://admin:L220E1A5@192.168.227.145:554/cam/realmonitor?channel=1&subtype=0&unicast=true&proto=Onvif'
@@ -49,15 +58,15 @@ rstp_link = 'rtsp://admin:L220E1A5@192.168.227.145:554/cam/realmonitor?channel=1
 # Global variables
 img, img_binary = None, None
 centerDistance = 0
-isStartingDetect = False
+isStartingDetect = True
 lastTimestamp = 0
 lastCenterDistance = 0
 lastTiltAngle = 0
 
 
-def pre_processing(_img, arg, addedBorderColor):
+def pre_processing(frame, arg, addedBorderColor):
     # Resize to 448x448
-    img = cv2.resize(_img, (448, 448))
+    img = cv2.resize(frame, (448, 448))
 
     if (addedBorderColor == "white"):
         # Add a white border line to 4 sides of the image, border size = 5
@@ -73,16 +82,16 @@ def pre_processing(_img, arg, addedBorderColor):
     img_hsv = cv2.cvtColor(img, cv2.COLOR_BGR2HSV)
 
     # Gaussian blur
-    gaussian_blur_img = cv2.GaussianBlur(img_gray, (5, 5), 0);
+    gaussian_blurframe = cv2.GaussianBlur(img_gray, (5, 5), 0);
 
     # Median blur
-    median_blur_img = cv2.medianBlur(img_gray, 5)
+    median_blurframe = cv2.medianBlur(img_gray, 5)
 
     # Binary threshold
-    ret, img_binary = cv2.threshold(gaussian_blur_img, 127, 255, cv2.THRESH_BINARY)
+    ret, img_binary = cv2.threshold(gaussian_blurframe, 127, 255, cv2.THRESH_BINARY)
 
     # Adaptive threshold
-    img_adaptive_threshold = cv2.adaptiveThreshold(gaussian_blur_img, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
+    img_adaptive_threshold = cv2.adaptiveThreshold(gaussian_blurframe, 255, cv2.ADAPTIVE_THRESH_GAUSSIAN_C,
                                                    cv2.THRESH_BINARY, 11, 2)
     match arg:
         case 'none':
@@ -148,10 +157,10 @@ def on_message(client, userdata, msg):
     print(msg.topic + " " + str(msg.payload))
 
 
-def detect_lane_front_cam(_img):
+def detect_lane_front_cam(frame):
     print("Detecting lane front cam")
 
-    img_binary = pre_processing(_img, 'binary', "black")
+    img_binary = pre_processing(frame, 'binary', "black")
 
     # Detect edges using canny
     img_canny = cv2.Canny(img_binary, 100, 200)
@@ -190,7 +199,7 @@ def detect_lane_front_cam(_img):
             if (box[0][0] >= 224 or box[1][0] >= 224 or box[2][0] >= 224 or box[3][0] >= 224):
                 continue
             else:
-                cv2.drawContours(_img, [box], 0, (0, 255, 255), 2)
+                cv2.drawContours(frame, [box], 0, (0, 255, 255), 2)
 
         # On the right side of center vertical line, keep only -45 degree tilted rectangles
         min_area_rects_right = [rect for rect in min_area_rects if rect[0][0] > 224]
@@ -209,29 +218,29 @@ def detect_lane_front_cam(_img):
             if (box[0][0] <= 224 or box[1][0] <= 224 or box[2][0] <= 224 or box[3][0] <= 224):
                 continue
             else:
-                cv2.drawContours(_img, [box], 0, (0, 255, 255), 2)
+                cv2.drawContours(frame, [box], 0, (0, 255, 255), 2)
 
         # Draw detected contours
-        cv2.drawContours(_img, contours, -1, (0, 255, 0), 5)
+        cv2.drawContours(frame, contours, -1, (0, 255, 0), 5)
 
         # Draw a vertical line in the middle of the image, color red
-        cv2.line(_img, (224, 0), (224, 448), (0, 0, 255), 2)
+        cv2.line(frame, (224, 0), (224, 448), (0, 0, 255), 2)
 
         # Draw a horizontal line in the middle of the image, color red
-        cv2.line(_img, (0, 224), (448, 224), (0, 0, 255), 2)
+        cv2.line(frame, (0, 224), (448, 224), (0, 0, 255), 2)
 
-        cv2.imshow('Contours', _img)
+        cv2.imshow('Contours', frame)
         cv2.imshow('Canny', img_canny)
 
         print("Detecting lane front cam done")
 
 
-def detect_lane_bottom_cam(_img):
+def detect_lane_bottom_cam(frame):
     # Global variables
     global centerDistance, json_data, lastTimestamp, lastCenterDistance, lastTiltAngle
 
-    img_binary = pre_processing(_img, 'binary', "white")
-    img_rbg = pre_processing(_img, 'none', "white")
+    img_binary = pre_processing(frame, 'binary', "white")
+    img_rbg = pre_processing(frame, 'none', "white")
 
     # Detect edges using canny
     img_canny = cv2.Canny(img_binary, 100, 200)
@@ -240,7 +249,7 @@ def detect_lane_bottom_cam(_img):
     contours, hierarchy = cv2.findContours(img_canny, cv2.RETR_TREE, cv2.CHAIN_APPROX_SIMPLE)
 
     # Draw contours
-    cv2.drawContours(_img, contours, -1, (0, 255, 0), 5)
+    cv2.drawContours(frame, contours, -1, (0, 255, 0), 5)
 
     # Filter contours by size from max to min
     contours = sorted(contours, key=cv2.contourArea, reverse=True)[:5]
@@ -259,25 +268,25 @@ def detect_lane_bottom_cam(_img):
     rects = [cv2.boundingRect(cnt) for cnt in contours]
 
     # Draw the center of the biggest contour
-    cv2.circle(_img, (cx, cy), 5, (0, 0, 255), -1)
+    cv2.circle(frame, (cx, cy), 5, (0, 0, 255), -1)
 
     # Draw the bounding rectangles, color blue
     for rect in rects:
         x, y, w, h = rect
-        cv2.rectangle(_img, (x, y), (x + w, y + h), (255, 0, 0), 2)
+        cv2.rectangle(frame, (x, y), (x + w, y + h), (255, 0, 0), 2)
 
     # Draw min area rectangles, color yellow
     for cnt in contours:
         min_area_rect = cv2.minAreaRect(cnt)
         box = cv2.boxPoints(min_area_rect)
         box = np.int0(box)
-        cv2.drawContours(_img, [box], 0, (0, 255, 255), 2)
+        cv2.drawContours(frame, [box], 0, (0, 255, 255), 2)
 
     # Draw a vertical line in the middle of the image, color red
-    cv2.line(_img, (224, 0), (224, 448), (0, 0, 255), 2)
+    cv2.line(frame, (224, 0), (224, 448), (0, 0, 255), 2)
 
     # Draw a horizontal line in the middle of the image, color red
-    cv2.line(_img, (0, 224), (448, 224), (0, 0, 255), 2)
+    cv2.line(frame, (0, 224), (448, 224), (0, 0, 255), 2)
 
     # Calculate the distance between the center of the biggest contour and the center vertical line, with cases of the
     # center point is on the left or right of the center vertical line, always return distance in positive value
@@ -289,14 +298,14 @@ def detect_lane_bottom_cam(_img):
     # Draw a connecting line between the center of the biggest contour and the vertical line, put the distance value, text color
     # and line color depend on the distance value
     if centerDistance < 50:
-        cv2.line(_img, (cx, cy), (224, cy), (0, 255, 0), 2)
-        cv2.putText(_img, str(centerDistance), (cx, cy), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
+        cv2.line(frame, (cx, cy), (224, cy), (0, 255, 0), 2)
+        cv2.putText(frame, str(centerDistance), (cx, cy), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 0), 2)
     elif centerDistance < 100:
-        cv2.line(_img, (cx, cy), (224, cy), (0, 255, 255), 2)
-        cv2.putText(_img, str(centerDistance), (cx, cy), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2)
+        cv2.line(frame, (cx, cy), (224, cy), (0, 255, 255), 2)
+        cv2.putText(frame, str(centerDistance), (cx, cy), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 255, 255), 2)
     else:
-        cv2.line(_img, (cx, cy), (224, cy), (0, 0, 255), 2)
-        cv2.putText(_img, str(centerDistance), (cx, cy), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
+        cv2.line(frame, (cx, cy), (224, cy), (0, 0, 255), 2)
+        cv2.putText(frame, str(centerDistance), (cx, cy), cv2.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2)
 
     # Get time stamp at format linux time, to nano second
     timestamp = time.time_ns()
@@ -311,7 +320,7 @@ def detect_lane_bottom_cam(_img):
             # Serialize data to json format
             json_data = json.dumps(bottom_cam_frame_data)
             # Publish the json data to MQTT broker
-            client.publish(data_topic, json_data)
+            # client.publish(data_topic, json_data)
             # Update last timestamp and last center distance
             lastTimestamp = timestamp
             lastCenterDistance = centerDistance
@@ -322,19 +331,13 @@ def detect_lane_bottom_cam(_img):
     print(json_data)
 
     # Dislay the image
-    cv2.imshow('Contours', _img)
+    cv2.imshow('Contours', frame)
     cv2.imshow('Canny', img_canny)
 
 
-def main(cameraType):
-    # Global variables
-
-    # Capture video from RSTP stream and display frame
+def main(camera_position, video_source):
+    # Capture video from RTSP stream and display frame
     cap = cv2.VideoCapture(video_source)
-
-    # if not cap.isOpened():
-    #    print('Cannot open RTSP stream')
-    #    exit(-1)
 
     # Read frame and process
     while True:
@@ -349,8 +352,7 @@ def main(cameraType):
             cv2.destroyAllWindows()
             break
         frame = cv2.resize(frame, (448, 448))
-        # cv2.imshow('Original', frame)
-        if (cameraType == 'front'):
+        if camera_position == 'front':
             detect_lane_front_cam(frame)
         else:
             detect_lane_bottom_cam(frame)
@@ -359,11 +361,45 @@ def main(cameraType):
             break
 
 
+def run_single_detection(video_index):
+    video_source, camera_position = video_sources[video_index]
+    main(camera_position, video_source)
+
+
+def run_all_detections():
+    with concurrent.futures.ThreadPoolExecutor(max_workers=4) as executor:
+        futures = [executor.submit(main, vs[1], vs[0]) for vs in video_sources]
+        concurrent.futures.wait(futures)
+
+
+if __name__ == "__main__":
+    execute_all = False  # Set this flag to True to run all detections, False to run a single detection
+    single_video_index = 1  # Set this to the index of the video to run if execute_all is False
+
+    while True:
+        if execute_all:
+            run_all_detections()
+        else:
+            if 0 <= single_video_index < len(video_sources):
+                run_single_detection(single_video_index)
+            else:
+                print("Invalid video index.")
+                break
+        break  # Exit the loop after one execution
+
 # Start MQTT connection
-connect_mqtt()
+# connect_mqtt()
 # Start main function and repeat when it ends
-while True:
-    if (isLoopStop == False):
-        client.loop_start()
-    if (isStartingDetect == True):
-        main('bottom')
+
+# while True:
+#     if (isLoopStop == False):
+#        client.loop_start()
+#     if (isStartingDetect == True):
+#         video_source = 'video-4.mp4'
+#         main('bottom')
+#         video_source = 'video-5.mp4'
+#         main('bottom')
+#         video_source = 'video-1.mp4'
+#         main('front')
+#         video_source = 'video-2.mp4'
+#         main('front')
