@@ -374,7 +374,7 @@ def run_all_detections():
 
 if __name__ == "__main__":
     execute_all = False  # Set this flag to True to run all detections, False to run a single detection
-    single_video_index = 1  # Set this to the index of the video to run if execute_all is False
+    single_video_index = 0  # Set this to the index of the video to run if execute_all is False
 
     while True:
         if execute_all:
